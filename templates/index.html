@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Insects Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-[url('/static/background3.jpg')] bg-cover bg-center">
+
+
+    <!-- Include Navbar -->
+    {% include 'Navbar.html' %}
+
+    <div class=" flex justify-center items-center h-max  mt-10">
+
+
+        <div class="bg-white shadow-lg rounded-lg p-6 w-full w-max text-center">
+            <h2 class="text-2xl font-bold text-gray-700">Farm Insects Detection</h2>
+
+            <form id="uploadForm" action="/" method="post" enctype="multipart/form-data" class="mt-4">
+                <input type="file" name="file" required
+                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:rounded-lg file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300">
+
+                <div class="mt-4 flex gap-2">
+                    <button type="submit"
+                        class="w-1/2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
+                        Upload & Detect
+                    </button>
+                    <button type="button" id="clearBtn"
+                        class="w-1/2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">
+                        Clear
+                    </button>
+                </div>
+            </form>
+
+            {% if image %}
+
+            <div class="flex  max-w-lg">
+                <div id="uploadedImage" class="mt-6 mr-5">
+                    <h3 class="text-lg font-semibold text-gray-700">Uploaded Image:</h3>
+                    <div class="mt-4">
+                        <img src="{{ image }}" alt="Uploaded Image" class="w-64 mx-auto rounded-lg border">
+                    </div>
+                </div>
+
+                <div id="resultSection" class="mt-6">
+                    <h3 class="text-lg font-semibold text-gray-700">Detected Insects:</h3>
+                    <div class="mt-4">
+                        <img src="{{ image }}" alt="Uploaded Image" class="w-64 mx-auto rounded-lg border">
+                    </div>
+                    <ul class="mt-4 text-gray-600">
+                        {% for result in predictions %}
+                        <li class="text-lg font-semibold text-red-600">
+                            {{ result.disease }}  <span class="text-gray-700"> {{ (result.confidence * 100)
+                                | round(2) }}%</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+
+            </div>
+
+
+            {% endif %}
+
+            {% if message %}
+            <p class="mt-4 text-red-500">{{ message }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("clearBtn").addEventListener("click", function () {
+            // Reset the file input and form
+            document.getElementById("uploadForm").reset();
+
+            // Remove result section if it exists
+            const resultSection = document.getElementById("resultSection");
+            if (resultSection) {
+                resultSection.remove();
+            }
+
+            const uploadedSection =document.getElementById("uploadedImage");
+            if(uploadedSection){
+                uploadedSection.remove();
+            }
+
+            
+        });
+    </script>
+
+</body>
+
+</html>
